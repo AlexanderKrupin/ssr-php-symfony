@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+    php:
+        build:
+            context: ./docker-files/php
+        container_name: v8-php
+        volumes:
+            - ./:/var/www
+    nginx:
+        image: nginx:latest
+        container_name: v8-nginx
+        ports:
+            - 8088:80
+        volumes:
+            - ./:/var/www
+            - ./docker-files/nginx/v8.conf:/etc/nginx/conf.d/v8.conf
+        depends_on:
+            - php
+    postgres:
+        image: postgres:10
+        container_name: v8-postgres
+        ports:
+            - 5433:5432
+        volumes:
+            - v8-postgres:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+
+volumes:
+    v8-postgres:
+    v8-php-socket:
